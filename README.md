@@ -9,8 +9,8 @@ A simple Next.js 15 (App Router) app with public & protected routes, NextAuth (c
 - MongoDB Atlas 
 
 ## Live
-- Live: 
-- Repo: 
+- Live: https://easy-shop-tan.vercel.app/
+
 
 ## Setup
 
