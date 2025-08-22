@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 async function getProducts() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/products`, {
-    cache: "no-store",
-  });
+  const h = await headers();            
+  const host = h.get("host");
+  const protocol = process.env.VERCEL ? "https" : "http";
+  const res = await fetch(`${protocol}://${host}/api/products`, { cache: "no-store" });
   if (!res.ok) return [];
   return res.json();
 }
@@ -26,12 +29,10 @@ export default async function ProductsPage() {
         <div className="grid gap-6 md:grid-cols-3">
           {items.map((p) => (
             <div key={p._id ?? p.id} className="h-full">
-              <div className="rounded border border-gray-200 bg-gray-50 p-6 shadow-sm h-full flex flex-col">
-                {/* Consistent image area at the top */}
+              <div className="rounded border bg-white p-6 shadow-sm h-full flex flex-col">
                 <div className="w-full aspect-[4/3] overflow-hidden rounded bg-gray-100">
                   {p.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <ImageWithFallback
                       src={p.imageUrl}
                       alt={p.name}
                       className="h-full w-full object-cover"
@@ -43,10 +44,8 @@ export default async function ProductsPage() {
                   )}
                 </div>
 
-                {/* Text content */}
                 <h3 className="mt-4 text-lg font-semibold text-black">{p.name}</h3>
 
-                {/* Clamp description to 2 lines so heights match */}
                 <p
                   className="mt-2 text-gray-600"
                   style={{
@@ -59,9 +58,10 @@ export default async function ProductsPage() {
                   {p.description}
                 </p>
 
-                <p className="mt-3 text-xl font-bold text-black">£{Number(p.price).toFixed(2)}</p>
+                <p className="mt-3 text-xl font-bold text-black">
+                  £{Number(p.price).toFixed(2)}
+                </p>
 
-                {/* Spacer pushes the button to the bottom */}
                 <div className="mt-auto" />
 
                 <div className="pt-5">

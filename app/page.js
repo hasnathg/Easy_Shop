@@ -1,12 +1,15 @@
 import Hero from "@/components/Hero";
 import Link from "next/link";
+import { headers } from "next/headers";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 async function getProducts() {
-  const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  const res = await fetch(`${base}/api/products`, { cache: "no-store" });
+  const h = await headers();              // ✅ await headers()
+  const host = h.get("host");
+  const protocol = process.env.VERCEL ? "https" : "http";
+  const res = await fetch(`${protocol}://${host}/api/products`, { cache: "no-store" });
   if (!res.ok) return [];
   const all = await res.json();
-  // show newest first, then take top 3
   return all.slice(0, 3);
 }
 
@@ -33,10 +36,15 @@ export default async function Home() {
                   {/* Consistent image slot */}
                   <div className="w-full aspect-[4/3] overflow-hidden rounded bg-gray-100">
                     {p.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
+                      <ImageWithFallback
+                        src={p.imageUrl}
+                        alt={p.name}
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
-                      <div className="h-full w-full grid place-items-center text-gray-500 text-sm">No image</div>
+                      <div className="h-full w-full grid place-items-center text-gray-500 text-sm">
+                        No image
+                      </div>
                     )}
                   </div>
 
