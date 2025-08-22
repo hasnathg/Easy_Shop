@@ -1,0 +1,34 @@
+import Link from "next/link";
+import { products } from "@/data/products";
+
+export const metadata = { title: "Products • Easy Shop" };
+
+export default function ProductsPage() {
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-10">
+      <div className="flex items-end justify-between mb-6">
+        <h1 className="text-3xl font-bold">All Products</h1>
+        <Link href="/" className="underline text-sm">Home</Link>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {products.map((p) => (
+          <div key={p.id} className="rounded border bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold">{p.name}</h3>
+            <p className="mt-2 text-gray-600">{p.description}</p>
+            <p className="mt-3 text-xl font-bold">£{p.price.toFixed(2)}</p>
+
+            <div className="mt-5">
+              <Link
+                href={`/products/${p.id}`}
+                className="inline-block rounded bg-black text-white px-4 py-2 text-sm"
+              >
+                Details
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
