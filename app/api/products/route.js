@@ -18,8 +18,8 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { name, description, price } = body || {};
+   const body = await req.json();
+  const { name, description, price, imageUrl } = body || {};
   if (!name || !description || typeof price !== "number") {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
@@ -31,10 +31,10 @@ export async function POST(req) {
     name,
     description,
     price,
+    imageUrl: imageUrl || "",          
     createdAt: new Date(),
     createdBy: session.user?.email || session.user?.id || "unknown",
   };
-
   const result = await db.collection("products").insertOne(doc);
   return NextResponse.json({ _id: result.insertedId, ...doc }, { status: 201 });
 }

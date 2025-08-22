@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Easy Shop
 
-## Getting Started
+A simple Next.js 15 (App Router) app with public & protected routes, NextAuth (credentials), and MongoDB Atlas.
 
-First, run the development server:
+## Tech
+- Next.js 15 (App Router)
+- Tailwind CSS v4
+- NextAuth (credentials)
+- MongoDB Atlas 
+
+## Live
+- Live: 
+- Repo: 
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+git clone <repo>
+cd easy_shop
+npm install
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Routes
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+/ – Landing (Navbar, Hero, Highlights, Footer)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+/login – Credentials login (NextAuth)
 
-## Learn More
+/products – Product list (DB)
 
-To learn more about Next.js, take a look at the following resources:
+/products/[id] – Product details (DB)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+/dashboard – Protected dashboard home
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+/dashboard/add-product – Protected add product form
 
-## Deploy on Vercel
+/api/products – GET (list), POST (create; auth required)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+/api/products/[id] – GET (single)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Notes
+
+Credentials auth stores users in users collection with bcrypt-hashed passwords.
+
+Products are saved to products collection with optional imageUrl.

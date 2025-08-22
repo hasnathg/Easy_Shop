@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
+import ThemeToggle from "./ThemeToggle";
 
 function ProfileMenu() {
   const { data: session } = useSession();
@@ -22,10 +23,10 @@ function ProfileMenu() {
   const avatar = session.user.image;
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative bg-gray-50" ref={ref}>
       <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded px-2 py-1.5 hover:bg-gray-100"
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center gap-2 rounded px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -44,16 +45,19 @@ function ProfileMenu() {
       </button>
 
       {open && (
-        <div role="menu" className="absolute right-0 mt-2 w-48 rounded border bg-white text-black shadow p-1">
-          <Link href="/dashboard" className="block rounded px-3 py-2 text-sm hover:bg-gray-100" onClick={() => setOpen(false)}>
+        <div
+          role="menu"
+          className="absolute right-0 top-full mt-2 z-50 w-56 rounded-md border bg-white text-black shadow-lg p-1 dark:bg-zinc-900 dark:text-white dark:border-zinc-800"
+        >
+          <Link href="/dashboard" className="block rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setOpen(false)}>
             Dashboard
           </Link>
-          <Link href="/dashboard/add-product" className="block rounded px-3 py-2 text-sm hover:bg-gray-100" onClick={() => setOpen(false)}>
+          <Link href="/dashboard/add-product" className="block rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setOpen(false)}>
             Add Product
           </Link>
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="w-full text-left rounded px-3 py-2 text-sm hover:bg-gray-100"
+            className="w-full text-left rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800"
           >
             Logout
           </button>
@@ -69,16 +73,19 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="w-full border-b bg-white">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-gray-50 text-black rounded-2xl">
       <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold">Easy Shop</Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-5">
+        {/* Desktop nav (right side items) */}
+        <nav className="hidden md:flex items-center gap-4">
           <Link href="/" className="hover:underline">Home</Link>
           <Link href="/products" className="hover:underline">Products</Link>
-          {authed ? <ProfileMenu /> : (
-            <Link href="/login" className="rounded border px-3 py-1.5 hover:bg-gray-100">
+          <ThemeToggle /> {/*  theme toggle on the right */}
+          {authed ? (
+            <ProfileMenu />
+          ) : (
+            <Link href="/login" className="rounded border px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800">
               Login
             </Link>
           )}
@@ -87,8 +94,8 @@ export default function Navbar() {
         {/* Mobile burger */}
         <button
           aria-label="Toggle menu"
-          className="md:hidden rounded p-2 hover:bg-gray-100"
-          onClick={() => setMobileOpen((v) => !v)}
+          className="md:hidden rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+          onClick={() => setMobileOpen(v => !v)}
         >
           <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
             {mobileOpen ? (
@@ -100,25 +107,31 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer (fixed so it overlays hero) */}
       {mobileOpen && (
-        <div className="md:hidden border-t bg-white">
+        <div className="md:hidden fixed top-14 inset-x-0 z-40 border-t bg-white shadow dark:bg-zinc-900 dark:border-zinc-800">
           <nav className="mx-auto max-w-6xl px-4 py-3 flex flex-col gap-2">
-            <Link href="/" className="rounded px-3 py-2 hover:bg-gray-100" onClick={() => setMobileOpen(false)}>Home</Link>
-            <Link href="/products" className="rounded px-3 py-2 hover:bg-gray-100" onClick={() => setMobileOpen(false)}>Products</Link>
+            <Link href="/" className="rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setMobileOpen(false)}>Home</Link>
+            <Link href="/products" className="rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setMobileOpen(false)}>Products</Link>
+
+            {/* Theme toggle in mobile */}
+            <div className="mt-1 px-3">
+              <ThemeToggle />
+            </div>
+
             {authed ? (
               <>
-                <Link href="/dashboard" className="rounded px-3 py-2 hover:bg-gray-100" onClick={() => setMobileOpen(false)}>Dashboard</Link>
-                <Link href="/dashboard/add-product" className="rounded px-3 py-2 hover:bg-gray-100" onClick={() => setMobileOpen(false)}>Add Product</Link>
+                <Link href="/dashboard" className="rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                <Link href="/dashboard/add-product" className="rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setMobileOpen(false)}>Add Product</Link>
                 <button
                   onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
-                  className="text-left rounded px-3 py-2 hover:bg-gray-100"
+                  className="text-left rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800"
                 >
                   Logout
                 </button>
               </>
             ) : (
-              <Link href="/login" className="rounded px-3 py-2 hover:bg-gray-100" onClick={() => setMobileOpen(false)}>Login</Link>
+              <Link href="/login" className="rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800" onClick={() => setMobileOpen(false)}>Login</Link>
             )}
           </nav>
         </div>

@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { products } from "@/data/products";
 
-// Make this async and await params
+async function getProduct(id) {
+  const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const res = await fetch(`${base}/api/products/${id}`, { cache: "no-store" });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const { id } = await params; // Next 15 async
+  const product = await getProduct(id);
   return {
     title: product ? `${product.name} • Easy Shop` : "Product • Easy Shop",
   };
 }
 
-// Make the page async and await params
 export default async function ProductDetails({ params }) {
   const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const product = await getProduct(id);
 
   if (!product) {
     return (
@@ -26,15 +30,24 @@ export default async function ProductDetails({ params }) {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <Link href="/products" className="underline text-sm">← Back to products</Link>
+      <Link href="/products" className=" text-sm">← Back to products</Link>
 
       <h1 className="mt-4 text-3xl font-bold">{product.name}</h1>
       <p className="mt-2 text-gray-600">{product.description}</p>
-      <p className="mt-4 text-2xl font-extrabold">£{product.price.toFixed(2)}</p>
+      <p className="mt-4 text-2xl font-extrabold">£{Number(product.price).toFixed(2)}</p>
 
-      <div className="mt-8 h-64 w-full rounded bg-gray-100 grid place-items-center">
-        <span className="text-gray-500">Product image</span>
-      </div>
+      {product.imageUrl ? (
+  // eslint-disable-next-line @next/next/no-img-element
+  <img
+    src={product.imageUrl}
+    alt={product.name}
+    className="mt-8 max-h-[480px] w-full object-contain rounded bg-gray-100"
+  />
+) : (
+  <div className="mt-8 h-72 w-full rounded bg-gray-100 grid place-items-center">
+    <span className="text-gray-500">No image</span>
+  </div>
+)}
     </main>
   );
 }
