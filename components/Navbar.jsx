@@ -107,7 +107,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile drawer (fixed so it overlays hero) */}
+      {/* Mobile drawer  */}
       {mobileOpen && (
         <div className="md:hidden fixed top-14 inset-x-0 z-40 border-t bg-white shadow dark:bg-zinc-900 dark:border-zinc-800">
           <nav className="mx-auto max-w-6xl px-4 py-3 flex flex-col gap-2">
